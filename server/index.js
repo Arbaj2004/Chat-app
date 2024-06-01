@@ -12,7 +12,7 @@ app.use(cors({
     credentials: true
 }))
 
-app.use(express.json())     //to get json data from post requests otherwise give error of destructured data 
+app.use(express.json())     //to get json data from post requests otherwise give error of destructured data //this is middleware which call for every req
 
 app.get('/', (request, response) => {
     response.json({
