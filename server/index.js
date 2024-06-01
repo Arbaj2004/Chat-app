@@ -3,6 +3,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const router = require('./routes/index')
+const cookiesParser = require('cookie-parser')
 
 dotenv.config({ path: './config.env' })
 
@@ -13,6 +14,7 @@ app.use(cors({
 }))
 
 app.use(express.json())     //to get json data from post requests otherwise give error of destructured data //this is middleware which call for every req
+app.use(cookiesParser())     //to get token from cookies 
 
 app.get('/', (request, response) => {
     response.json({
