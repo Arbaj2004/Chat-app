@@ -6,12 +6,14 @@ const router = require('./routes/index')
 const cookiesParser = require('cookie-parser')
 
 dotenv.config({ path: './config.env' })
-
 const app = express();
-app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true
-}))
+
+app.use(cors());
+
+// app.use(cors({
+//     origin: process.env.FRONTEND_URL,
+//     credentials: true
+// }))
 
 app.use(express.json())     //to get json data from post requests otherwise give error of destructured data //this is middleware which call for every req
 app.use(cookiesParser())     //to get token from cookies 

@@ -19,7 +19,7 @@ router.get('/user-details', userDetails)
 //logout //token in cookie =''
 router.get('/logout', logout)
 //update user details
-router.post('/update-user', updateUserDetails)
+router.patch('/update-user', updateUserDetails)
 
 
 
