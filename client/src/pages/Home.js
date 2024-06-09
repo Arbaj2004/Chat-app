@@ -19,15 +19,9 @@ const Home = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const location = useLocation()
-    console.log("location", location);
-    // console.log("location", location);
+
     const basePath = location?.pathname === '/';
-    const token = localStorage.getItem("AuthToken");
-    // if (!token) {
-    //     navigate('/email')
-    // }
-    const value = `; ${document.cookie}`;
-    console.log(value);
+
 
     const fetchUserDetails = async () => {
         const URL = `${process.env.REACT_APP_BACKEND_URL}/api/user-details`
