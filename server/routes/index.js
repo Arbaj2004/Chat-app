@@ -5,6 +5,7 @@ const checkPassword = require('../controller/checkPassword');
 const userDetails = require('../controller/userDetails');
 const logout = require('../controller/logout');
 const updateUserDetails = require('../controller/updateUserDetails');
+const searchUser = require('../controller/SearchUser');
 
 const router = express.Router()
 
@@ -20,6 +21,8 @@ router.get('/user-details', userDetails)
 router.get('/logout', logout)
 //update user details
 router.patch('/update-user', updateUserDetails)
+//get all users
+router.post('/search-user', searchUser)
 
 
 

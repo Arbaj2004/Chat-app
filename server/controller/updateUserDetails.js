@@ -13,7 +13,7 @@ async function updateUserDetails(req, res) {
         const user = await getUserDetailsFromToken(token)
         //user can update profilePic and email only
         const { name, profilePic } = req.body
-        const updateUser = await UserModel.updateOne({ _id: user._id }, {
+        const updateUser = await UserModel.updateOne({ _id: user?._id }, {
             name,
             profilePic
         })

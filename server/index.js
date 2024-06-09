@@ -1,44 +1,47 @@
-const express = require('express')
-const cors = require('cors')
-const mongoose = require('mongoose')
-const dotenv = require('dotenv')
-const router = require('./routes/index')
-const cookiesParser = require('cookie-parser')
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const router = require('./routes/index');
+const cookieParser = require('cookie-parser');
+const { app, server } = require('./socket/index')
 
-dotenv.config({ path: './config.env' })
-const app = express();
+dotenv.config({ path: './config.env' });
+//called in socket remove it 
+// const app = express();       
 
-app.use(cors());
+// Configure CORS
+app.use(cors({
+    origin: process.env.FRONTEND_URL, // Ensure this is the correct frontend URL
+    credentials: true // Allow credentials (cookies, authorization headers, etc.)
+}));
 
-// app.use(cors({
-//     origin: process.env.FRONTEND_URL,
-//     credentials: true
-// }))
+app.use(express.json()); // To parse JSON data from POST requests
+app.use(cookieParser()); // To parse cookies
 
-app.use(express.json())     //to get json data from post requests otherwise give error of destructured data //this is middleware which call for every req
-app.use(cookiesParser())     //to get token from cookies 
-
+// Simple route to test if the server is running
 app.get('/', (request, response) => {
     response.json({
         message: "server running fine"
-    })
-})
+    });
+});
 
-//api endpoints
-app.use('/api', router)
+// API endpoints
+app.use('/api', router);
 
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 8000;
 
-//DB connection
+// DB connection
 mongoose
     .connect(process.env.MONGODB_URI, {
+
     })
     .then(() => {
         console.log("DB connection success👌");
     })
     .catch((error) => console.log(`${error} ${process.env.PORT} did not connect`));
 
-
-app.listen(PORT, () => {
-    console.log(`Server Port: ${PORT}`)
-})
+// Start the server
+server.listen(PORT, () => {
+    console.log(`Server Port: ${PORT}`);
+});

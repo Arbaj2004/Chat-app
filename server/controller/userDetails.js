@@ -10,7 +10,8 @@ async function userDetails(req, res) {
 
         if (!token) {
             return res.status(200).json({
-                message: "kindly log in cookie is null"
+                message: "kindly log in cookie is null",
+                error: true
             })
         }
 

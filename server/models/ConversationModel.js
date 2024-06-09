@@ -4,36 +4,43 @@ const messageSchema = new mongoose.Schema({
     text: {
         type: String,
         default: ""
-    }, imageUrl: {
+    },
+    imageUrl: {
         type: String,
         default: ""
-    }, videoUrl: {
+    },
+    videoUrl: {
         type: String,
         default: ""
-    }, seen: {
+    },
+    seen: {
         type: Boolean,
         default: false
+    },
+    msgByUserId: {
+        type: mongoose.Schema.ObjectId,
+        required: true,
+        ref: 'User'
     }
 }, {
     timestamps: true
 })
 
-
 const conversationSchema = new mongoose.Schema({
     sender: {
-        type: mongoose.Schema.ObjectId,      //incase to populate the data i.e to get userinfo from his id
+        type: mongoose.Schema.ObjectId,
         required: true,
-        refer: 'User'                        //user refer and id belong to User table so refer it
+        ref: 'User'
     },
     receiver: {
         type: mongoose.Schema.ObjectId,
         required: true,
-        refer: 'User'
+        ref: 'User'
     },
-    messages: [          //this is array of messages 
+    messages: [
         {
-            type: mongoose.Schema.objectId,
-            refer: 'Message'                 //creating new module for messages
+            type: mongoose.Schema.ObjectId,
+            ref: 'Message'
         }
     ]
 }, {
@@ -43,4 +50,7 @@ const conversationSchema = new mongoose.Schema({
 const MessageModel = mongoose.model('Message', messageSchema)
 const ConversationModel = mongoose.model('Conversation', conversationSchema)
 
-module.exports = { MessageModel, ConversationModel }
+module.exports = {
+    MessageModel,
+    ConversationModel
+}

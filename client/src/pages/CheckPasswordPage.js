@@ -1,9 +1,12 @@
+//here i am saving token on redux state setToken
 import React, { useEffect, useState } from 'react'
 import { FaRegUser } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios'
 import Avatar from '../components/Avatar';
+import { useDispatch } from 'react-redux';
+import { setToken, setUser } from '../redux/userSlice';
 
 const CheckPasswordPage = () => {
 
@@ -14,6 +17,8 @@ const CheckPasswordPage = () => {
 
     const navigate = useNavigate()
     const location = useLocation()
+    const dispatch = useDispatch()
+
     console.log("location", location);
     useEffect(() => {
         if (!location?.state?.data?.name) {
@@ -30,7 +35,7 @@ const CheckPasswordPage = () => {
             }
         })
     }
-
+    const user_id = location?.state?.data?._id;
     const handleSubmit = async (e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -38,17 +43,25 @@ const CheckPasswordPage = () => {
         const URL = `${process.env.REACT_APP_BACKEND_URL}/api/password`
         try {
             const response = await axios.post(URL, {
-                userId: location?.state?.data?._id,
-                password: data.password
-            })
+                userId: user_id,
+                password: data.password,
+            }, {
+                withCredentials: true
+            }
+            )
             console.log("response", response);
             toast.success(response.data.message)
+
+
             if (response.data.success) {
+                //storing redux states on localstorage
+                dispatch(setToken(response?.data?.token))
+                localStorage.setItem('token', response?.data?.token)
                 setData({
                     password: "",
                     userId: ""
                 })
-                navigate('/home')
+                navigate('/')
             }
         } catch (error) {
             toast.error(error?.response?.data?.message)
