@@ -6,6 +6,7 @@ import axios from 'axios'
 import taost from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../redux/userSlice'
+import Loading from './Loading'
 
 
 const EditUserDetails = ({ onClose, user }) => {
@@ -14,6 +15,7 @@ const EditUserDetails = ({ onClose, user }) => {
         name: user?.user,
         profilePic: user?.profilePic
     })
+    const token = localStorage.getItem('token')
     const uploadPhotoRef = useRef()
     const dispatch = useDispatch()
 
@@ -47,7 +49,6 @@ const EditUserDetails = ({ onClose, user }) => {
         e.preventDefault()
         e.stopPropagation()
         const file = e.target.files[0]
-
         const uploadPhoto = await UploadFiles(file)
 
         setData((preve) => {
@@ -62,15 +63,23 @@ const EditUserDetails = ({ onClose, user }) => {
         e.preventDefault()
         e.stopPropagation()
         try {
-            const URL = `${process.env.REACT_APP_BACKEND_URL}/api/update-user`
+            const URL = `${process.env.REACT_APP_BACKEND_URL}/users/updateUser`
             console.log("😒😒😒😒data", data);
-            const response = await axios.patch(URL, {
-                name: data.name,
-                profilePic: data.profilePic
-            }, {
-                withCredentials: true
-            }
-            )
+            // const response = await axios.patch(URL, {
+            //     name: data.name,
+            //     profilePic: data.profilePic
+            // }, {
+            //     withCredentials: true
+            // }
+            // )
+            const response = await axios.patch(
+                URL,
+                {
+                    name: data.name,
+                    profilePic: data.profilePic
+                },
+                { headers: { 'authorization': `Bearer ${token}` } }
+            );
 
             console.log('response', response)
             taost.success(response?.data?.message)

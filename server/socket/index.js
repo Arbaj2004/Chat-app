@@ -3,10 +3,11 @@ const { Server } = require('socket.io')
 const http = require('http')
 const dotenv = require('dotenv');
 const getUserDetailsFromToken = require('../helper/getUserDetailsFromToken');
-const UserModel = require('../models/UserModel');
+const User = require('../models/userModel')
 const { ConversationModel, MessageModel } = require('../models/ConversationModel');
 const getConversation = require('../helper/getConversation');
-var cron = require('node-cron');
+const { captureRejectionSymbol } = require('events');
+
 
 dotenv.config({ path: './config.env' });
 const app = express();
@@ -22,9 +23,10 @@ const io = new Server(server, {
 
 //online user
 const onlineUser = new Set()
-
+console.log("😊😀😍😒🙏😂🙏🔥🤣👌");
 io.on('connection', async (socket) => {
-    // console.log("connect User ", socket.id)
+    console.log("😊😀😍😒🙏😂🙏🔥🤣👌");
+    console.log("connect User ", socket.id)
 
     const token = socket.handshake.auth.token
     // console.log("token", token);
@@ -40,7 +42,7 @@ io.on('connection', async (socket) => {
 
     socket.on('message-page', async (userId) => {
         // console.log("userId", userId);
-        const userDetails = await UserModel.findById(userId).select("-password  ");
+        const userDetails = await User.findById(userId).select("-password  ");
         // console.log("HI", userDetails);
         const payload = {
             _id: userDetails?._id,
@@ -83,6 +85,7 @@ io.on('connection', async (socket) => {
             text: data.text,
             imageUrl: data?.imageUrl,
             videoUrl: data?.videoUrl,
+            docUrl: data?.docUrl,
             msgByUserId: data?.sender
         })
         const saveMessage = await message.save()

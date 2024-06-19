@@ -11,14 +11,19 @@ const SearchUser = ({ onClose }) => {
     const [loading, setLoading] = useState(false)
     const [search, setSearch] = useState("")
 
-
+    const token = localStorage.getItem('token')
     const handleSearchUser = async () => {
-        const URL = `${process.env.REACT_APP_BACKEND_URL}/api/search-user`
+        const URL = `${process.env.REACT_APP_BACKEND_URL}/users/search-user`
         try {
             setLoading(true)
-            const response = await axios.post(URL, {
-                search: search
-            })
+            console.log(`search: 'email':${search}`);
+            // const response = await axios.post(URL, { headers: { 'authorization': `Bearer ${token}`, }, email: `${search}` })
+            const response = await axios.post(
+                URL,
+                { search: search },
+                { headers: { 'authorization': `Bearer ${token}` } }
+            );
+
             setLoading(false)
 
             setSearchUser(response.data.data)

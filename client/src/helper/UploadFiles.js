@@ -1,4 +1,4 @@
-const url = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/auto/upload`
+const url = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/raw/upload`
 // console.log(`😒😒😒😒😒😒${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`);
 
 const uploadFile = async (file) => {

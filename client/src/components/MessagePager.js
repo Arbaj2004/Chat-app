@@ -10,37 +10,19 @@ import { IoIosVideocam } from "react-icons/io";
 import uploadFile from '../helper/UploadFiles';
 import { RxCross1 } from "react-icons/rx";
 import Loading from './Loading';
-import backgroundImg from '../assets/msg_background.png'
+// import backgroundImg from '../assets/msg_background.png'
 import { IoMdSend } from "react-icons/io";
 import moment from 'moment'
 import axios from 'axios';
-import toast from 'react-hot-toast';
-import Sidebar from './Sidebar';
+// import toast from 'react-hot-toast';
+// import Sidebar from './Sidebar';
 
 
-const MessagePage = () => {
+const MessagePager = () => {
     const params = useParams()
     const navigate = useNavigate()
 
-    useEffect(() => {
-        console.log();
-        const validate_user = async () => {
-            const URL = `${process.env.REACT_APP_BACKEND_URL}/api/validateUser`
-            try {
-                const response = await axios.post(URL, {
-                    userId: params?.userId
-                })
-                console.log("❤️❤️❤️❤️response", response);
-                toast.success(response.data.message)
 
-            } catch (error) {
-                console.log("👌👌👌👌❤️‍🔥", error);
-                navigate('/page/not_found')
-            }
-
-        };
-        validate_user()
-    }, [])
 
 
 
@@ -84,7 +66,8 @@ const MessagePage = () => {
     const [meassage, setMeassage] = useState({
         text: "",
         imageUrl: "",
-        videoUrl: ""
+        videoUrl: "",
+        docUrl: ""
     })
     const handleEnterTextMsg = (e) => {
         console.log(meassage);
@@ -135,7 +118,7 @@ const MessagePage = () => {
             }
         })
     }
-
+    console.log("datauser", datauser);
     const handleClearUploadVid = async () => {
         setMeassage(prev => {
             return {
@@ -144,9 +127,32 @@ const MessagePage = () => {
             }
         })
     }
+    const handleUploadDoc = async (e) => {
+        const file = e.target.files[0]
+        setLoading(true)
+        setOpenImgVidUpload(false)
+        const uploadDoc = await uploadFile(file)
+        setLoading(false)
+        console.log("😒😒😒😒uploadDoc", uploadDoc);
+        setMeassage(prev => {
+            return {
+                ...prev,
+                docUrl: uploadDoc?.secure_url
+            }
+        })
+    }
+    console.log("datauser", datauser);
+    const handleClearUploadDoc = async () => {
+        setMeassage(prev => {
+            return {
+                ...prev,
+                docUrl: ""
+            }
+        })
+    }
     const handleSendMessage = (e) => {
         e.preventDefault();
-        if (meassage.text || meassage.imageUrl || meassage.videoUrl) {
+        if (meassage.text || meassage.imageUrl || meassage.videoUrl || MessagePager.docUrl) {
             if (socketConnection) {
                 socketConnection.emit('new message', {
                     sender: user?._id,
@@ -154,6 +160,7 @@ const MessagePage = () => {
                     text: meassage?.text,
                     imageUrl: meassage?.imageUrl,
                     videoUrl: meassage?.videoUrl,
+                    docUrl: meassage?.docUrl
 
                 })
             }
@@ -163,7 +170,8 @@ const MessagePage = () => {
                 ...prev,
                 text: "",
                 imageUrl: "",
-                videoUrl: ""
+                videoUrl: "",
+                docUrl: " "
             }
         })
 
@@ -204,7 +212,7 @@ const MessagePage = () => {
 
             </header>
             {/* show all messages */}
-            <section style={{ background: `url(${backgroundImg})` }} className={`h-[calc(100vh-128px)] overflow-x-hidden ${meassage?.imageUrl || meassage?.videoUrl || loading ? "overflow-y-hidden" : "overflow-y-auto"}  scrollbar relative bg-slate-200 bg-opacity-50`}>
+            <section className={`h-[calc(100vh-128px)] overflow-x-hidden ${meassage?.imageUrl || meassage?.videoUrl || meassage?.docUrl || loading ? "overflow-y-hidden" : "overflow-y-auto"}  scrollbar relative bg-slate-200 bg-opacity-50`}>
                 <div className='flex flex-col gap-2 py-2 mx-2' ref={currentMessage}>
                     {
                         allMessages.map((msg, index) => {
@@ -228,6 +236,16 @@ const MessagePage = () => {
                                                         src={msg.videoUrl}
                                                         className='w-full h-full object-scale-down'
                                                         controls
+                                                    />
+                                                </div>
+                                            )
+                                        }
+                                        {
+                                            msg.docUrl && (
+                                                <div className='bg-slate-300 p-3 bg-opacity-45'>
+                                                    <document
+                                                        src={msg.docUrl}
+                                                        className='w-full h-full object-scale-down'
                                                     />
                                                 </div>
                                             )
@@ -275,6 +293,23 @@ const MessagePage = () => {
                     )
                 }
                 {
+                    meassage?.docUrl && (
+
+                        <div className='w-full sticky bottom-0 h-full flex flex-col justify-center items-center rounded overflow-hidden bg-slate-700 bg-opacity-30'>
+                            <div className='absolute cursor-pointer text-white font-extrabold right-5 top-20 hover:text-ld hover:font-bold hover:text-slate-200 w-12 h-12 hover:bg-slate-500 flex justify-center items-center rounded-full' onClick={handleClearUploadDoc}>
+                                <RxCross1 size={30} />
+                            </div>
+                            <div className='bg-white p-3 bg-opacity-45 '>
+                                <document
+                                    src={meassage?.docUrl}
+                                    className='aspect-auto w-96 object-scale-down'
+                                // controls
+                                />
+                            </div>
+                        </div>
+                    )
+                }
+                {
                     loading && (
                         <div className='w-full sticky bottom-0 h-full flex flex-col justify-center items-center rounded overflow-hidden bg-slate-700 bg-opacity-30'>
                             <div className='absolute'>
@@ -310,6 +345,12 @@ const MessagePage = () => {
                                         </div>
                                         <p>Video</p>
                                     </label>
+                                    <label htmlFor='uploadDoc' className='flex  justify-center gap-3 items-center p-2 cursor-pointer hover:bg-slate-200 rounded m-2'>
+                                        <div className='text-primary'>
+                                            <IoIosVideocam />
+                                        </div>
+                                        <p>Document</p>
+                                    </label>
                                     <input
                                         type="file"
                                         id='uploadImg'
@@ -322,6 +363,13 @@ const MessagePage = () => {
                                         id='uploadVid'
                                         onChange={handleUploadVideo}
                                         accept="video/mp4 "
+                                        className='hidden'
+                                    />
+                                    <input
+                                        type="file"
+                                        id='uploadDoc'
+                                        onChange={handleUploadDoc}
+                                        accept="application/pdf"
                                         className='hidden'
                                     />
                                 </form>
@@ -347,4 +395,4 @@ const MessagePage = () => {
     )
 }
 
-export default MessagePage
+export default MessagePager

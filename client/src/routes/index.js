@@ -1,15 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '../App'
-import RegisterPage from '../pages/RegisterPage'
-import CheckEmailPage from '../pages/CheckEmailPage'
-import CheckPasswordPage from '../pages/CheckPasswordPage'
+import SignUp from '../pages/Signup'
+import Login from '../pages/Login'
+import Register from '../pages/Register'
 import Home from '../pages/Home'
-import MessagePage from '../components/MessagePage'
-import AuthLayouts from '../layout'
-import ForgotPassword from '../pages/ForgotPassword'
-import UserDetails from '../pages/UserDetails'
-import Page_not_found from '../pages/Page_not_found'
-import ValidateUser from '../components/ValidateUser'
+import NotFound from '../pages/NotFound'
+import MessagePage from '../pages/MessagePage'
+import MessagePager from '../components/MessagePager'
+import MessageHome from '../pages/MessageHome'
+
 
 const router = createBrowserRouter([
     {
@@ -17,32 +16,32 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             {
+                path: '/',
+                element: <Home />
+            }, {
+                path: 'signup',
+                element: <SignUp />
+            }, {
+                path: 'login',
+                element: <Login />
+            }, {
                 path: 'register',
-                element: <AuthLayouts><RegisterPage /></AuthLayouts>
+                element: <Register />
             }, {
-                path: 'email',
-                element: <AuthLayouts><CheckEmailPage /></AuthLayouts>
-            }, {
-                path: 'password',
-                element: <AuthLayouts><CheckPasswordPage /></AuthLayouts>
-            }, {
-                path: 'forgot-password',
-                element: <AuthLayouts><ForgotPassword /></AuthLayouts>
-            }, {
-                path: 'user-details',
-                element: <AuthLayouts><UserDetails /></AuthLayouts>
-            }, {
-                path: '',
-                element: <Home />,
+                path: '/message',
+                element: <MessageHome />,
                 children: [
                     {
                         path: ':userId',
-                        element: <MessagePage />
+                        element: <MessagePager />
                     }
                 ]
-            }, {
+
+            },
+            {
                 path: '*',
-                element: <Page_not_found />
+                element: <NotFound />,
+
             }
         ]
     }

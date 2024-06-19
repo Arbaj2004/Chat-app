@@ -12,7 +12,9 @@ import { FaImage } from "react-icons/fa6";
 import { FaVideo } from "react-icons/fa6";
 import { logout } from '../redux/userSlice';
 import Cookies from 'js-cookie'
-
+import axios from 'axios';
+import { MdMessage } from "react-icons/md";
+import { TbLogout2 } from "react-icons/tb";
 
 const Sidebar = () => {
     const user = useSelector(state => state?.user)
@@ -55,41 +57,76 @@ const Sidebar = () => {
         }
     }, [socketConnection, user])
 
-    const handleLogout = () => {
-        dispatch(logout())
-        navigate("/login")
-        localStorage.clear()
-        Cookies.remove('token')
-    }
+    // useEffect(() => {
+    //validate userId in url
 
+    // }, [user,socketConnection])
+
+
+    const handleLogout = async (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        const URL = `${process.env.REACT_APP_BACKEND_URL}/users/logout`
+        try {
+            const response = await axios.get(URL, {
+                withCredentials: true
+            })
+            console.log("response", response);
+
+            if (response.data.status === "success") {
+                localStorage.setItem('token', response?.data?.token)
+                localStorage.clear()
+                navigate('/login')
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    //     return (
+    //         <div className='flex flex-col h-full items-center '>
+    //             <div className='hover:shadow-lg cursor-pointer p-2 mt-12' title='Message'>
+    //                 <MdMessage size={30} />
+    //             </div>
+    //             <div className='hover:shadow-lg cursor-pointer p-2 mt-auto'>
+    //                 <Avatar width={35} height={35} />
+    //             </div>
+    //             <div className='hover:shadow-lg cursor-pointer p-2 mb-12 mt-8' title='Logout'>
+    //                 <button title='logout' className='flex justify-center items-center cursor-pointer rounded' onClick={handleLogout}>
+    //                     <span >
+    //                         <TbLogout2 size={30} />
+    //                     </span>
+    //                 </button>
+    //             </div>
+    //         </div>
+    //     )
+    // }
     return (
         <div className='w-full h-full grid grid-cols-[48px,1fr] bg-white'>
             <div className='bg-slate-100 w-12 h-full rounded-tr-lg rounded-br-lg py-5 text-slate-600 flex flex-col justify-between'>
                 <div>
                     <NavLink className={({ isActive }) => `w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded ${isActive && "bg-slate-200"}`} title='chat'>
-                        <IoChatbubbleEllipses
-                            size={20}
-                        />
+                        <MdMessage size={30} />
                     </NavLink>
 
-                    <div title='add friend' onClick={() => setOpenSearchUser(true)} className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded' >
-                        <FaUserPlus size={20} />
+                    <div title='add friend' onClick={() => setOpenSearchUser(true)} className='w-12 mt-6 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded' >
+                        <FaUserPlus size={30} />
                     </div>
                 </div>
 
                 <div className='flex flex-col items-center'>
-                    <button className='mx-auto' title={user?.name} onClick={() => setEditUserOpen(true)}>
+                    <button className='mx-auto mt-auto mb-8 hover:shadow-lg' title={user?.name} onClick={() => setEditUserOpen(true)}>
                         <Avatar
-                            width={40}
-                            height={40}
+                            width={35}
+                            height={35}
                             name={user?.name}
                             imageUrl={user?.profilePic}
                             userId={user?._id}
                         />
+
                     </button>
-                    <button title='logout' className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded' onClick={handleLogout}>
+                    <button title='logout' className='w-12 mb-8 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded' onClick={handleLogout}>
                         <span className='-ml-2'>
-                            <BiLogOut size={20} />
+                            <TbLogout2 size={30} />
                         </span>
                     </button>
                 </div>
@@ -118,7 +155,7 @@ const Sidebar = () => {
                     {
                         allUser.map((conv, index) => {
                             return (
-                                <NavLink to={"/" + conv?.userDetails?._id} key={conv?._id} className='flex shadow items-center gap-2 py-3 px-2 border border-transparent hover:border-primary rounded hover:bg-slate-100 cursor-pointer'>
+                                <NavLink to={"/message/" + conv?.userDetails?._id} key={conv?._id} className='flex shadow items-center gap-2 py-3 px-2 border border-transparent hover:border-primary rounded hover:bg-slate-100 cursor-pointer'>
                                     <div>
                                         <Avatar
                                             imageUrl={conv?.userDetails?.profilePic}

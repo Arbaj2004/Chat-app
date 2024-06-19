@@ -13,6 +13,10 @@ const messageSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    docUrl: {
+        type: String,
+        default: ""
+    },
     seen: {
         type: Boolean,
         default: false
@@ -21,7 +25,8 @@ const messageSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         required: true,
         ref: 'User'
-    }
+    }, scheduledTime: Date,
+    status: { type: String, default: 'pending' }
 }, {
     timestamps: true
 })
