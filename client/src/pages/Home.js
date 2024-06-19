@@ -4,25 +4,40 @@ import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { logout, setOnlineUser, setUser, setsocketConnection } from '../redux/userSlice'
+import { logout, setOnlineUser, setToken, setUser, setsocketConnection } from '../redux/userSlice'
 import Sidebar from '../components/Sidebar'
 import logo from '../assets/logo.png'
 import io from 'socket.io-client'
+import Cookies from 'js-cookie';
+import toast from 'react-hot-toast'
+
 
 const Home = () => {
-
-
-
-
 
     const user = useSelector(state => state.user)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const location = useLocation()
-
     const basePath = location?.pathname === '/';
 
+    if (!localStorage.getItem('token')) {
+        navigate('/email')
+    }
 
+    useEffect(() => {
+        console.log(Cookies.get('token'));
+        if (!Cookies.get('token')) {
+            navigate('/email')
+            toast.error("cookie is NULL")
+        }
+    }, [])
+
+
+
+    console.log("localStorage😒😒😒😒", localStorage);
+    if (localStorage.token) {
+        dispatch(setToken(localStorage.token))
+    }
     const fetchUserDetails = async () => {
         const URL = `${process.env.REACT_APP_BACKEND_URL}/api/user-details`
         try {
@@ -50,6 +65,7 @@ const Home = () => {
                 token: localStorage.getItem('token')
             }
         })
+        // console.log(data);
         socketConnection.on('onlineUsers', (data) => {
             console.log("data i sfdksjhkfhskjfh", data);
             dispatch(setOnlineUser(data))

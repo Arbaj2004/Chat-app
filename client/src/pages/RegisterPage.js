@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import uploadFile from '../helper/UploadFiles';
 import axios from 'axios'
+import Loading from '../components/Loading';
 
 const RegisterPage = () => {
     const [data, setData] = useState({
@@ -25,12 +26,13 @@ const RegisterPage = () => {
         })
     }
     const [uploadPhoto, setUploadPhoto] = useState("")
-
+    const [loading, setLoading] = useState(false)
     const handleUploadProfilePhoto = async (e) => {
-        const file = e.target.files[0]
-
+        const file = e.target.files[0];
+        setLoading(true)
         const uploadPhoto = await uploadFile(file)
         console.log("😒😒😒😒uploadPhoto", uploadPhoto);
+        setLoading(false)
 
         setData((prev) => {
             return {
@@ -73,13 +75,14 @@ const RegisterPage = () => {
         console.log(data);
     }
     return (
-        <div className='mt-5 '>
+        <div className={`mt-4 m-0 w-full h-full overflow-y-hidden ${loading ? "opacity-70" : "cursor-pointer"} `}>
+
             <div className='bg-white w-full max-w-md  rounded overflow-hidden p-4 mx-auto'>
                 <h3>Welcome to Chat app!</h3>
             </div>
-            <div className='bg-white w-full max-w-md  rounded overflow-hidden p-4 mx-auto'>
+            <div className='bg-white w-full max-w-md  rounded overflow-hidden px-4 mx-auto'>
                 <form action="" onSubmit={handleSubmit}>
-                    <div className='flex flex-col  bg-white p-2'>
+                    <div className='flex flex-col  bg-white p-1'>
                         <label htmlFor="name">Name : </label>
                         <input
                             type="text"
@@ -92,7 +95,7 @@ const RegisterPage = () => {
                             required
                         />
                     </div>
-                    <div className='flex flex-col  bg-white p-2'>
+                    <div className='flex flex-col  bg-white p-1'>
                         <label htmlFor="email">Email : </label>
                         <input
                             type="email"
@@ -105,7 +108,16 @@ const RegisterPage = () => {
                             required
                         />
                     </div>
-                    <div className='flex flex-col  bg-white p-2'>
+                    {
+                        loading && (
+                            <div className=' sticky bottom-0 flex justify-center items-center'>
+                                <div className='absolute left-auto'>
+                                    <Loading width={12} />
+                                </div>
+                            </div>
+                        )
+                    }
+                    <div className='flex flex-col  bg-white p-1'>
                         <label htmlFor="password">Password : </label>
                         <input
                             type="password"
@@ -118,9 +130,9 @@ const RegisterPage = () => {
                             required
                         />
                     </div>
-                    <div className='flex flex-col  bg-white p-2'>
+                    <div className='flex flex-col  bg-white p-1'>
                         <label htmlFor="profilePic">profilePic :
-                            <div className='bg-slate-200 p-5 flex justify-center hover:cursor-pointer border my-3 hover:border-primary rounded-lg'>
+                            <div className='bg-slate-200 p-5 flex justify-center hover:cursor-pointer border my-1 hover:border-primary rounded-lg'>
                                 <p className='text-ellipsis max-w-80 line-clamp-1'>{uploadPhoto?.name ? uploadPhoto?.name : "upload the photo"}</p>
                                 {
                                     uploadPhoto?.name && (
@@ -141,11 +153,11 @@ const RegisterPage = () => {
                             onChange={handleUploadProfilePhoto}
                         />
                     </div>
-                    <div className='flex flex-col  bg-white p-2'>
-                        <button className='bg-primary flex justify-center  p-2  hover:bg-secondary rounded text-white text-lg font-bold'>Register</button>
+                    <div className='flex flex-col  bg-white p-1'>
+                        <button className={`bg-primary flex justify-center  p-2  hover:bg-secondary rounded text-white text-lg font-bold ${loading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}>Register</button>
                     </div>
                 </form>
-                <p className='bg-white text-center  py-3 pb-4'>Already have account ? <Link to={"/email"} className='text-primary text-lg font-bold hover:underline hover:text-blue-950'>Login</Link></p>
+                <p className='bg-white text-center  pb-4'>Already have account ? <Link to={"/email"} className='text-primary text-lg font-bold hover:underline hover:text-blue-950'>Login</Link></p>
             </div>
         </div>
     )

@@ -6,6 +6,7 @@ const getUserDetailsFromToken = require('../helper/getUserDetailsFromToken');
 const UserModel = require('../models/UserModel');
 const { ConversationModel, MessageModel } = require('../models/ConversationModel');
 const getConversation = require('../helper/getConversation');
+var cron = require('node-cron');
 
 dotenv.config({ path: './config.env' });
 const app = express();

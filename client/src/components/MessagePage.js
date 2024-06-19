@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import Avatar from './Avatar'
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaAngleLeft } from "react-icons/fa";
@@ -13,9 +13,37 @@ import Loading from './Loading';
 import backgroundImg from '../assets/msg_background.png'
 import { IoMdSend } from "react-icons/io";
 import moment from 'moment'
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import Sidebar from './Sidebar';
+
 
 const MessagePage = () => {
     const params = useParams()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        console.log();
+        const validate_user = async () => {
+            const URL = `${process.env.REACT_APP_BACKEND_URL}/api/validateUser`
+            try {
+                const response = await axios.post(URL, {
+                    userId: params?.userId
+                })
+                console.log("❤️❤️❤️❤️response", response);
+                toast.success(response.data.message)
+
+            } catch (error) {
+                console.log("👌👌👌👌❤️‍🔥", error);
+                navigate('/page/not_found')
+            }
+
+        };
+        validate_user()
+    }, [])
+
+
+
     const socketConnection = useSelector(state => state?.user.socketConnection)
     // console.log("socketConnection", socketConnection);
     const user = useSelector(state => state?.user)
@@ -142,6 +170,7 @@ const MessagePage = () => {
     }
     return (
         <div >
+            {/* <Sidebar /> */}
             <header className='sticky top-0 h-16 bg-slate-200 flex justify-between  items-center px-4'>
                 <div className='flex items-center gap-4'>
                     <div>

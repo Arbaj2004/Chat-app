@@ -23,14 +23,15 @@ async function checkPassword(req, res) {
             // password: password
         }
         //jwt.sign() : parameters: data/payload , secreatkey , expire in 
-        const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
+        const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY, { expiresIn: '2d' })
 
-        const cookieOptions = {
-            httpOnly: true
-            // secure: true
-        }
+        // const cookieOptions = {
+        //     // httpOnly: true
+        //     // secure: true
+        // }
 
-        return res.cookie('token', token, cookieOptions).status(200).json({
+        // return res.cookie('token', token, cookieOptions).status(200).json({
+        return res.cookie('token', token).status(200).json({
             message: `Login successfully`,
             token: token,
             success: true

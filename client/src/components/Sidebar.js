@@ -6,12 +6,13 @@ import { BiLogOut } from "react-icons/bi";
 import Avatar from './Avatar'
 import { useDispatch, useSelector } from 'react-redux';
 import EditUserDetails from './EditUserDetails';
-import Divider from './Divider';
 import { FiArrowUpLeft } from "react-icons/fi";
 import SearchUser from './SearchUser';
 import { FaImage } from "react-icons/fa6";
 import { FaVideo } from "react-icons/fa6";
 import { logout } from '../redux/userSlice';
+import Cookies from 'js-cookie'
+
 
 const Sidebar = () => {
     const user = useSelector(state => state?.user)
@@ -56,8 +57,9 @@ const Sidebar = () => {
 
     const handleLogout = () => {
         dispatch(logout())
-        navigate("/email")
+        navigate("/login")
         localStorage.clear()
+        Cookies.remove('token')
     }
 
     return (
@@ -81,7 +83,7 @@ const Sidebar = () => {
                             width={40}
                             height={40}
                             name={user?.name}
-                            imageUrl={user?.profile_pic}
+                            imageUrl={user?.profilePic}
                             userId={user?._id}
                         />
                     </button>
@@ -116,10 +118,10 @@ const Sidebar = () => {
                     {
                         allUser.map((conv, index) => {
                             return (
-                                <NavLink to={"/" + conv?.userDetails?._id} key={conv?._id} className='flex items-center gap-2 py-3 px-2 border border-transparent hover:border-primary rounded hover:bg-slate-100 cursor-pointer'>
+                                <NavLink to={"/" + conv?.userDetails?._id} key={conv?._id} className='flex shadow items-center gap-2 py-3 px-2 border border-transparent hover:border-primary rounded hover:bg-slate-100 cursor-pointer'>
                                     <div>
                                         <Avatar
-                                            imageUrl={conv?.userDetails?.profile_pic}
+                                            imageUrl={conv?.userDetails?.profilePic}
                                             name={conv?.userDetails?.name}
                                             width={40}
                                             height={40}

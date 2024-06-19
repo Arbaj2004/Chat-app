@@ -8,6 +8,8 @@ import MessagePage from '../components/MessagePage'
 import AuthLayouts from '../layout'
 import ForgotPassword from '../pages/ForgotPassword'
 import UserDetails from '../pages/UserDetails'
+import Page_not_found from '../pages/Page_not_found'
+import ValidateUser from '../components/ValidateUser'
 
 const router = createBrowserRouter([
     {
@@ -38,6 +40,9 @@ const router = createBrowserRouter([
                         element: <MessagePage />
                     }
                 ]
+            }, {
+                path: '*',
+                element: <Page_not_found />
             }
         ]
     }
